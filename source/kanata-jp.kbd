@@ -1,0 +1,788 @@
+#|
+これはKanata公式サンプル設定です。各機能の例を含むため、実運用では必要な部分だけ残して使います。
+詳細な設定ガイドや追加サンプルはKanataのドキュメントを参照してください。
+緊急終了は、物理キーの Left Control + Space + Escape を同時に長押しします。
+この判定はKanataのリマップ後ではなく、リマップ前の物理入力で行われます。
+|#
+
+;; 1行コメントは二重セミコロンで始めます。単独のセミコロンはキー名として扱われるため注意します。
+
+#|
+複数行コメントは #| で始まり、対応する終端記号で終わります。
+Kanataの設定はLisp風のS式構文ですが、深いLisp知識は不要です。
+サンプルに沿って少しずつ設定すれば十分です。
+エラー時はKanataのメッセージを確認し、必要に応じてGitHub Discussionsで相談できます。
+|#
+
+;; defcfg はKanata全体の挙動を変える任意の設定項目です。
+(defcfg
+  ;; Linuxで入力デバイスを明示する例です。環境によってデバイス名は異なります。
+
+  ;; 複数のLinux入力デバイスを指定する場合の書き方です。コロンを含むパスはエスケープします。
+
+  ;; リスト構文でLinux入力デバイスを指定する例です。空白を含む項目では引用符を使います。
+
+  ;; linux-dev を省略した場合に対象へ含めるデバイス名を指定します。
+
+  ;; linux-dev を省略した場合に対象から除外するデバイス名を指定します。
+
+  ;; 入力デバイスが見つからない場合の終了動作を変更できます。
+
+  ;; Linuxでの自動デバイス検出の対象を調整できます。マウス系デバイスを掴みたくない場合に使います。
+
+  ;; LinuxのX11でキーリピート速度を起動時やライブリロード時に設定する例です。
+
+  ;; LinuxでKanataの出力デバイスをトラックポイントとして扱わせる設定です。対象デバイスの絞り込みが推奨されます。
+
+  ;; LinuxのUnicode入力は Ctrl+Shift+U 経由で行います。ユーザー空間の配列変換がある場合は、実際に小文字uを出すキーコードを指定する必要があります。
+
+  ;; LinuxのUnicode入力を確定するキーを変更できます。Enter、Space、またはその組み合わせを指定できます。
+
+  ;; LinuxでKanataが作成するevdev出力デバイス名を変更できます。
+
+  ;; Linuxのevdev出力デバイスのバスタイプをUSBまたはI8042から選べます。環境によって副作用があります。
+
+  ;; WindowsでAltGrを使う配列の不自然な挙動を軽減する設定です。低レベルフックを使う他アプリとの相性に注意します。
+
+  ;; Kanataから外部コマンドを実行する機能です。危険性が高いため、通常ビルドでは無効です。
+
+  ;; defsrc にないキーも処理する設定です。少数キーだけを定義する場合や一部の tap-hold 系動作に関係します。
+
+  ;; このサンプルでは後半のカスタムレイヤーマップ例を動かすために有効化しています。
+
+  ;; yes 相当の指定から特定キーだけ除外するリスト形式も使えます。
+  process-unmapped-keys (all-except f19)
+
+  ;; defsrc にないキーをすべて無効化する設定です。process-unmapped-keys が必要です。
+
+  ;; 特定マウスデバイスのボタンをInterceptionドライバ経由で取り込む設定例です。ノートPCの特殊ボタンなどで使います。
+
+  ;; 複数のマウスHWIDをリストで指定する形式です。
+
+  ;; kanata-wintercept で一部の接続キーボードだけを対象にする設定です。
+
+  ;; winterceptのデバイス設定には除外指定もあります。通常指定と除外指定は同時には使えません。
+
+  ;; layer-switch で有効化されたレイヤー上の透明キーの委譲先を変更する設定です。
+
+  ;; movemouse-accel の加速状態の引き継ぎ方を変更する設定です。QMK風のマウス加速に寄せられます。
+
+  ;; 斜め方向のマウス移動を滑らかにする設定です。描画用途でのカクつき軽減に使います。
+
+  ;; 動的マクロで記録できる入力数の上限を変更できます。
+
+  ;; 近いタイミングで複数の tap-hold が発動した場合のタイムアウト処理を短縮します。
+  concurrent-tap-hold yes
+
+  ;; one-shot-press や tap-hold のタップ側リリースを少し遅らせる設定です。高速すぎる入力を処理できない環境への回避策です。
+  rapid-event-delay 5
+
+  ;; レイヤー変更ログの出力設定です。コマンドライン引数で上書きされる場合があります。
+
+  ;; override 発動時に非修飾キーを即座に押下・解放する設定です。意図しない挙動を避ける一方、押しっぱなし用途には注意が必要です。
+  override-release-on-activation yes
+
+  ;; マウスカーソル移動を検知したときに指定キーをタップ扱いにする設定です。マウス操作中だけマウスキーレイヤーを有効化する用途に使えます。
+)
+
+;; deflocalkeys 系は、ロケール固有の文字に対応するOSコードを定義するための設定です。プラットフォームごとに変種があります。
+
+(deflocalkeys-win
+  ì 187
+)
+
+(deflocalkeys-wintercept
+  ì 187
+)
+
+(deflocalkeys-winiov2
+  ì 187
+)
+
+(deflocalkeys-linux
+  ì 13
+)
+
+(deflocalkeys-macos
+  ì 13
+)
+
+;; defsrc はKanataが取り込むキーを定義します。各 deflayer は defsrc と同じ個数・同じ順序で対応します。
+(defsrc
+  grv  1    2    3    4    5    6    7    8    9    0    -    =    bspc
+  tab  q    w    e    r    t    y    u    i    o    p    [    ]    \
+  caps a    s    d    f    g    h    j    k    l    ;    '    ret
+  lsft z    x    c    v    b    n    m    ,    .    /    rsft
+  lctl lmet lalt           spc            ralt rmet rctl
+)
+
+;; 最初に定義したレイヤーがKanata起動時の初期レイヤーになります。ここではQWERTYを基本にしています。
+(deflayer qwerty
+  @grl 1    2    3    4    5    6    7    8    9    0    -    =    bspc
+  tab  q    w    e    r    t    y    u    i    o    p    [    ]    \
+  caps a    s    d    f    g    h    j    k    l    ;    '    ret
+  lsft z    x    c    v    b    n    m    ,    .    /    rsft
+  lctl lmet lalt           spc            ralt rmet rctl
+)
+
+;; dvorak レイヤーはDvorak配列への変換例です。左手側に複数の tap-hold エイリアスがあります。
+(deflayer dvorak
+  @grl 1    2    3    4    5    6    7    8    9    0    [    ]    bspc
+  tab  '    ,    @.ms p    y    f    g    c    r    l    /    =    \
+  @cap @anm @oar @ech @umc @ifk d    h    t    n    s    -    ret
+  lsft ;    q    j    k    x    b    m    w    v    z    rsft
+  lctl lmet lalt           spc           @ralt rmet @rcl
+)
+
+;; deflayermap は defsrc に依存せず、少数キーだけを簡単に変更する別方式です。学習中の可視性では通常の deflayer も有用です。
+(deflayermap (custom-map-example)
+  caps esc
+  esc  caps
+
+  ;; アンダースコア系の指定で、レイヤー内で明示していないキーをまとめて扱えます。process-unmapped-keys が必要な形式もあります。
+
+  ;; 明示的に割り当てていないキーを無効化する例です。
+  _ XX   ;; 明示していないキーを無効化する例です。
+  __ XX  ;; 明示していないキーを無効化する例です。
+)
+
+;; defvar はよく使う値を変数として定義するために使います。
+(defvar
+  tap-repress-timeout   100
+  hold-timeout          200
+  tt $tap-repress-timeout
+  ht $hold-timeout
+
+  ;; concat で始まるリスト値は文字列を連結します。
+  a "hello"
+  b "world"
+  ct (concat $a " " $b)
+)
+
+(defalias
+  th1 (tap-hold $tt $ht caps lctl)
+  th2 (tap-hold $tt $ht spc lsft)
+)
+
+;; defalias は複雑なアクションに短い名前を付け、deflayer を読みやすく保つために使います。
+(defalias
+  ;; ベースレイヤーをQWERTYまたはDvorakに切り替えるエイリアスです。
+  dvk (layer-switch dvorak)
+  qwr (layer-switch qwerty)
+
+  ;; レイヤーを押している間だけ有効化するエイリアス群です。このサンプルでは便宜上トグルと呼んでいます。
+  num (layer-toggle numbers)
+  chr (layer-toggle chords)
+  arr (layer-toggle arrows)
+  msc (layer-toggle misc)
+  lay (layer-toggle layers)
+  mse (layer-toggle mouse)
+  fks (layer-while-held fakekeys)
+
+  ;; tap-hold の説明です。タップ時の動作、ホールド時の動作、タイムアウトの意味、派生アクションの違いを示しています。
+  anm (tap-hold 200 200 a @num)   ;; タップ・ホールド動作の説明です。
+  oar (tap-hold 200 200 o @arr)   ;; タップ・ホールド動作の説明です。
+  ech (tap-hold 200 200 e @chr)   ;; タップ・ホールド動作の説明です。
+  umc (tap-hold 200 200 u @msc)   ;; タップ・ホールド動作の説明です。
+  grl (tap-hold 200 200 grv @lay) ;; タップ・ホールド動作の説明です。
+  .ms (tap-hold 200 200 . @mse)   ;; タップ・ホールド動作の説明です。
+  ifk (tap-hold 200 200 i @fks)   ;; タップ・ホールド動作の説明です。
+
+  ;; tap-hold-press-timeout と tap-hold-release-timeout は、時間切れ時に別アクションを実行できます。
+
+  ;; タップは o、ホールドは矢印レイヤー、時間切れはBackspaceです。
+  oat (tap-hold-press-timeout   200 200 o @arr bspc)
+  ;; タップは e、ホールドはchordsレイヤー、時間切れはEscです。
+  ect (tap-hold-release-timeout 200 200 e @chr esc)
+  ;; reset-timeout-on-press を追加すると、別キーの押下時にタイマーを延長してホールド判定の余裕を作れます。
+  ect2 (tap-hold-release-timeout 200 200 e @chr esc reset-timeout-on-press)
+
+  ;; tap-hold-release には、特定キーを押したときに早期タップ判定する変種があります。
+
+  ;; タップは u、ホールドはmiscレイヤー、指定キーが押されたら早期タップします。
+  umk (tap-hold-release-keys 200 200 u @msc (a o e))
+
+  ;; tap-hold-release-keys の変種では、指定キーの押下から解放までをタップ判定に使えます。
+  umk2 (tap-hold-release-tap-keys-release 200 200 u @msc (a o e) (' , .))
+
+  ;; タップは u、ホールドはmiscレイヤー、指定キーが押されたら常にタップ扱いにします。
+  uek (tap-hold-except-keys 200 200 u @msc (a o e))
+
+  ;; tap-hold-tap-keys は、指定キー以外で早期ホールドにしないため、ホームロウMOD向きです。
+  utk (tap-hold-tap-keys 200 200 u @msc (a o e))
+
+  ;; CapsLockはタップでCapsLock、ホールドで左Ctrlにする例です。
+  cap (tap-hold 200 200 caps lctl)
+
+  ;; multi は複数アクションを順番に、ただし同時押しとして実行するエイリアスです。複雑な組み合わせでは挙動に注意します。
+  ralt (multi ralt (layer-toggle ralted))
+)
+
+;; environment でトップレベル設定を囲むと、環境変数が一致する場合だけ有効化できます。
+(environment (LAPTOP lp1)
+  (defalias met @lp1met)
+)
+
+(environment (LAPTOP lp2)
+  (defalias met @lp2met)
+)
+
+;; defaliasenvcond は古い環境条件付きエイリアス定義です。指定した環境変数が一致する場合だけエイリアスが有効になります。
+(defaliasenvcond (LAPTOP lp1)
+  met @lp1met
+)
+
+(defaliasenvcond (LAPTOP lp2)
+  met @lp2met
+)
+
+(defalias
+  ;; Shift付きの記号キー用エイリアスです。
+  { S-[
+  } S-]
+  : S-;
+
+  ;; マクロ内で数値を遅延ではなくキーとして使うため、数字自身にエイリアスを付けています。
+  8 8
+  0 0
+)
+
+(defalias
+  ;; multi、ショートカット記法、修飾キー接頭辞、AltGr、出力コードの解除挙動についての説明です。
+  alp (multi lsft a b c d e f g h i j k l m n o p q r s t u v w x y z)
+
+  ;; reverse-release-order を使うと、キーを押した順とは逆順に解放できます。
+  S-a-reversed (multi lsft a reverse-release-order)
+
+  ;; ショートカット記法を使ったコード例です。Linux端末でのコピー・貼り付けに使います。
+  csv C-S-v
+  csc C-S-c
+
+  ;; Windowsのタスク切り替えショートカット例です。
+  win M-tab
+
+  ;; フランス語配列向けのアクセント付き文字をAltGr経由で出す例です。
+  é AG-2
+  è RA-7
+  testmacro (macro AG-2 RA-7)
+  🙃 (unicode 🙃)
+
+  ;; macro はキー、コード、遅延を並べて実行できます。数字は遅延として扱われるため、キーとして使うには別名化が必要です。
+  lch (macro h t t p @: / / 100 l o c a l h o s t @: @8 @0 @8 @0)
+  tbm (macro A-(tab 200 tab 200 tab) 200 S-A-(tab 200 tab 200 tab))
+  hpy (macro S-i spc a m spc S-(h a p p y) spc m y S-f r S-i e S-n d @🙃)
+
+  rls (macro-release-cancel Digit1 500 bspc S-1 500 bspc S-2)
+  cop (macro-cancel-on-press Digit1 500 bspc S-1 500 bspc S-2)
+  rlpr (macro-release-cancel-and-cancel-on-press Digit1 500 bspc S-1 500 bspc S-2)
+
+  ;; macro-repeat 系は、対象マクロがすべて終了した後、押している間だけ繰り返します。
+  mr1 (macro-repeat mltp)
+  mr2 (macro-repeat-release-cancel mltp)
+  mr3 (macro-repeat-cancel-on-press mltp)
+  mr4 (macro-repeat-release-cancel-and-cancel-on-press mltp)
+
+  ;; 動的マクロの記録・再生用エイリアスです。動的マクロは入れ子にできますが再帰はできません。
+  dms dynamic-macro-record-stop
+  dst (dynamic-macro-record-stop-truncate 3)
+  dr0 (dynamic-macro-record 0)
+  dr1 (dynamic-macro-record 1)
+  dr2 (dynamic-macro-record 2)
+  dp0 (dynamic-macro-play 0)
+  dp1 (dynamic-macro-play 1)
+  dp2 (dynamic-macro-play 2)
+
+  ;; unmod は一時的に修飾キーを解除してから指定キーを送ります。Shift中でも数字などを素の状態で出す用途です。
+  um1 (unmod 1)
+  ;; デッドキーを使って、Shift時に大文字のアクセント文字を出す例です。
+  dké (macro (unmod ') e)
+
+  ;; unshift はShiftだけを一時解除します。ドイツ語QWERTZで記号を強制的に非Shiftで出す例です。
+  de{ (unshift ralt 7)
+  de[ (unshift ralt 8)
+
+  ;; unmod は対象修飾キーのリストを受け取り、その修飾キーだけを一時解除できます。
+  unalt-a (unmod (lalt ralt) a)
+
+  ;; unicode は単一Unicode文字を出力します。押しっぱなしによる自動リピートはされません。
+  🙁 (unicode 🙁)
+
+  ;; 括弧やダブルクォートは、引用構文を使ってUnicode出力できます。
+  lp1 (unicode r#"("#)
+  rp1 (unicode r#")"#)
+  dq (unicode r#"""#)
+  lp2 (unicode "(")
+  rp2 (unicode ")")
+
+  ;; fork は通常時のアクションと、指定キーが有効なときのアクションを切り替えます。
+  frk (fork @🙃 @🙁 (lsft rsft))
+
+  ;; switch は条件、アクション、継続方法を組で指定します。条件には論理演算も使えます。
+  swt (switch
+
+    ;; 複雑なキー条件の例です。他言語での論理式に近い形になります。
+    ((and a b (or c d) (or e f))) a break
+
+    ;; forkに近い条件の例です。いずれかのキーが有効なら一致します。
+    (a b c) b fallthrough
+
+    ;; key-history は、直近何番目に入力されたキーが指定キーかどうかを判定します。
+    ((key-history a 1) (key-history b 8)) c break
+
+    ;; key-timing は、直近入力の時間差が指定ミリ秒より小さい・大きいかを判定します。
+    ((key-timing 1 lt 3000)       (key-timing 2 gt 30000)        ) c break
+    ((key-timing 7 less-than 200) (key-timing 8 greater-than 500)) c break
+
+    ;; not は指定リストのいずれにも一致しないことを表します。
+    ((not a b c)) c break
+
+    ;; 入力種別に関する条件の例です。
+    ((input real lctl)) d break
+    ((input virtual sft)) e break
+    ((input-history real lsft 2)) f break
+    ((input-history virtual ctl 2)) g break
+
+    ;; layer は現在アクティブなレイヤー名が一致するかを判定します。
+    ((layer dvorak)) x break
+    ((layer qwerty)) y break
+
+    ;; base-layer は最後に layer-switch されたベースレイヤー名が一致するかを判定します。
+    ((base-layer dvorak)) x break
+    ((base-layer qwerty)) y break
+
+    ;; 空リストは常に真になるデフォルト条件です。ここでは break と fallthrough の違いは実質ありません。
+    () c break
+  )
+
+  ;; cmd アクションは危険なため、明示的な有効化と対応ビルドがなければ設定読み込みに失敗します。
+
+  ;; cmd-log はコマンド実行時のログ出力レベルを制御できます。実行失敗時の扱いも別に指定できます。
+
+  ;; cmd-output-keys はコマンド出力をS式として読み、マクロに似たキー列として出力します。対応する要素は限定されています。
+)
+
+;; アンダースコアは透過、XXは無効を意味します。use-defsrc はdefsrcで定義された元キーとして振る舞わせます。
+(defalias src use-defsrc)
+(deflayer numbers
+  @src _    _    _    _    _    nlk  kp7  kp8  kp9  _    _    _    _
+  _    _    _    _    _    XX   _    kp4  kp5  kp6  -    _    _    _
+  _    _    C-z  _    _    XX   _    kp1  kp2  kp3  +    _    _
+  _    C-z  C-x  C-c  C-v  XX   _    kp0  kp0  .    /    _
+  _    _    _              _              _    _    _
+)
+
+;; lrld は設定のライブリロードです。デバイス関連設定はライブリロード対象外です。複数設定ファイルの切替にも使えます。
+(deflayer layers
+  _    @qwr @dvk lrld lrpv lrnx (lrld-num 1) _ _    _    _    _    _    _
+  _    _    _    _    _    _    _    _    _    _    _    _    _    _
+  _    _    _    _    _    _    _    _    _    _    _    _    _
+  _    _    _    _    _    _    _    _    _    _    _    _
+  _    _    _              _              _    _    _
+)
+
+(defalias
+
+  ;; one-shot は、タイムアウトするか別キーが押されるまで一度だけ有効な修飾キーやレイヤーを作ります。押しっぱなしでは通常キーのように動きます。
+  os1 (one-shot 500 lsft)
+  os2 (one-shot 500 C-S-lalt)
+  os3 (one-shot 500 (layer-toggle misc))
+
+  ;; one-shot には、押下で終了する形式、解放で終了する形式、再押下時にキャンセルする形式があります。
+  osp (one-shot-press 500 lsft)
+  osr (one-shot-release 500 lsft)
+  opp (one-shot-press-pcancel 500 lsft)
+  orp (one-shot-release-pcancel 500 lsft)
+
+  ;; one-shot-pause-processing は、意図しない処理でone-shot状態が解除されるのを避けるために一時停止を入れます。
+  ops (one-shot-pause-processing 5)
+
+  ;; tap-dance はタップ回数に応じて別アクションを実行します。タイムアウト、末尾到達、別キー押下で確定します。
+  td (tap-dance 200 (a b c d spc))
+
+  ;; tap-dance-eager は、最後に1つだけでなくタップ順の各アクションを順次実行します。
+  td2 (tap-dance-eager 500 (
+    (macro a) ;; キーの自動リピートを防ぐためmacroを使います。
+    (macro bspc b b)
+    (macro bspc bspc c c c)
+  ))
+
+  ;; arbitrary-code はOSコード番号を直接送るテスト用機能です。プラットフォーム非依存ではなく、未登録キーの調査に使います。
+  ab1 (arbitrary-code 700)
+)
+
+(defalias
+  ;; caps-word は英数字入力中にShiftを自動追加し、大文字語を入力しやすくする機能です。終了条件とタイムアウトを指定できます。
+  cw (caps-word 2000)
+
+  ;; caps-word-custom は、Shiftを追加するキー群と継続扱いにするキー群を自分で指定できます。
+  cwc (caps-word-custom
+    2000
+    (a b c d e f g h i j k l m n o p q r s t u v w x y z 0 1 2 3 4 5 6 7 8 9)
+    (kp0 kp1 kp2 kp3 kp4 kp5 kp6 kp7 kp8 kp9 bspc del up down left rght)
+  )
+)
+
+;; caps-word のトグル版は、有効中に再押下すると終了し、無効中なら開始します。
+(defalias
+  cwt (caps-word-toggle 2000)
+  cct (caps-word-custom-toggle
+    2000
+    (a b c d e f g h i j k l m n o p q r s t u v w x y z 0 1 2 3 4 5 6 7 8 9)
+    (kp0 kp1 kp2 kp3 kp4 kp5 kp6 kp7 kp8 kp9 bspc del up down left rght)
+  )
+)
+
+;; rpt は直前に出力したキーを繰り返します。長押ししても連続送信はしません。コード全体を繰り返したい場合は rpt-any を使います。
+(deflayer misc
+  _    _    _    _    _    _    _    _    _    @é   @è   _    ì #| テスト用の独自キー |#   _
+  _    _    @ab1 _    _    _    ins  @{   @}   [    ]    _    _    +
+  @cw  _    _    _    C-u  _    del  bspc esc  ret  _    _    _
+  @cwc C-z  C-x  C-c  C-v  _    _    _    @td  @os1 @os2 @os3
+  rpt rpt-any _            _              _    _    _
+)
+
+
+(deflayer chords      ;; deflayerに直接リストアクションも書けますが、読みやすさのため別名化を推奨します。
+  _    _    _    _    _    _    _    _    _    _    @🙁  (unicode 😀) _    _
+  _    _    _    _    _    _    _    _    @csc @hpy @lch @tbm         _    _
+  _    @alp _    _    _    _    _    @ch1 @ch2 @ch4 @ch8 _            _
+  _    _    _    _    _    _    _    _    _    @csv _    _
+  _    _    _              _              _    _    _
+)
+
+(deflayer arrows
+  _    f1   f2   f3   f4   f5   f6   f7   f8   f9   f10  f11  f12  _
+  _    _    _    _    _    _    _    pgup up   pgdn _    _    _    _
+  _    _    _    _    _    _    home left down rght end  _    _
+  _    _    _    _    _    _    _    _    _    _    _    _
+  _    _    _              _              _    _    _
+)
+
+;; WindowsではKanataウィンドウ上でマウスボタンを使うと停止する場合があります。マウスボタン、multi内のクリック順、タップ型ボタン、マウス移動の説明です。
+(deflayer mouse
+  _    @mwu @mwd @mwl @mwr _    _    _    _    _    @ma↑ _    _    _
+  _    pgup bck  _    fwd  _    _    _    _    @ma← @ma↓ @ma→ _    _
+  _    pgdn mlft _    mrgt mmid _    mbck mfwd _    @ms↑ _    _
+  @fms _    mltp _    mrtp mmtp _    mbtp mftp @ms← @ms↓ @ms→
+  _    _    _              _              _    _    _
+)
+
+(defalias
+  ;; マウスホイール動作の設定です。1つ目は間隔、2つ目は距離で、物理ホイール1ノッチ相当の値も示しています。
+  mwu (mwheel-up 50 120)
+  mwd (mwheel-down 50 120)
+
+  ;; 水平マウスホイールの設定です。考え方は垂直ホイールと同じです。
+  mwl (mwheel-left 50 120)
+  mwr (mwheel-right 50 120)
+
+  ;; 加速付きホイール動作の設定です。初速、最大速度、加速倍率、減速倍率を指定します。
+  mau (mwheel-accel-up   3 1200 1.15 0.93)
+  mad (mwheel-accel-down 3 1200 1.15 0.93)
+
+  ;; 通常のマウス移動です。間隔と1回あたりの移動ピクセル数を指定します。
+
+  ms↑ (movemouse-up 1 1)
+  ms← (movemouse-left 1 1)
+  ms↓ (movemouse-down 1 1)
+  ms→ (movemouse-right 1 1)
+
+  ;; 線形加速付きのマウス移動です。間隔、加速時間、最小距離、最大距離を指定します。
+
+  ma↑ (movemouse-accel-up 1 1000 1 5)
+  ma← (movemouse-accel-left 1 1000 1 5)
+  ma↓ (movemouse-accel-down 1 1000 1 5)
+  ma→ (movemouse-accel-right 1 1000 1 5)
+
+  ;; setmouse はカーソルを指定座標へ移動します。複数モニターでは全体を1つの大きな画面として扱います。
+  sm (setmouse 32228 32228)
+
+  ;; movemouse-speed は押している間、マウス移動速度を割合で変更します。値によってはピクセル距離が不正確になる場合があります。
+  fms (movemouse-speed 200)
+)
+
+(defalias
+  lft (multi (release-key ralt) left) ;; raltを解除して左矢印を押します。
+  rgt (multi (release-key ralt) rght) ;; raltを解除して右矢印を押します。
+  rlr (release-layer ralted)          ;; raltedレイヤーの押下状態を解除します。
+)
+
+;; ralt用の特殊レイヤー例です。特定キーではraltを解除してから矢印を送ることで、不要な修飾を避けます。
+(deflayer ralted
+  _    _    _    _    _    _    _    _    _    _    _    _    _    _
+  _    _    _    _    _    _    _    _    _    _    _    _    _    _
+  _    _    _    _    _    _    _    @lft @rlr @rgt _    _    _
+  _    _    _    _    _    _    _    _    _    _    _    _
+  _    _    _              _              _    _    _
+)
+
+;; 仮想キーアクションの例です。
+
+(defvirtualkeys
+  ;; 修飾キーとして働く仮想キーを定義します。
+  vkctl lctl
+  vksft lsft
+  vkmet lmet
+  vkalt lalt
+
+  ;; 上で定義した仮想修飾キーをまとめてトグルする仮想キーです。
+  vktal (multi
+        (on-press toggle-virtualkey vkctl)
+        (on-press toggle-virtualkey vksft)
+        (on-press toggle-virtualkey vkmet)
+        (on-press toggle-virtualkey vkalt)
+      )
+
+  ;; マクロを実行する仮想キーです。
+  vkmacro (macro h e l l o spc w o r l d)
+)
+
+(defalias
+  psfvk (on-press press-virtualkey   vksft)
+  rsfvk (on-press release-virtualkey vksft)
+
+  palvk (on-press tap-vkey vktal)
+  macvk (on-press tap-vkey vkmacro)
+
+  isfvk (on-idle 1000 tap-vkey vksft)
+  pisfvk (on-physical-idle 1000 tap-vkey vksft)
+)
+
+;; fake key は物理キーから直接は押せず、専用アクション経由でのみ操作できます。修飾キーの保持や任意タイミングでの解除に使えます。
+(deflayer fakekeys
+  _    @fcp @fsp @fmp @pal _    _    _    _    _    _    _    _    _
+  _    @fcr @fsr @fap @ral _    _    _    _    _    _    _    _    _
+  _    @fct @fst @rma _    _    _    _    _    _    _    _    _
+  _    @t1  _    _    _    _    _    _    _    _    _    _
+  _    _    _              _              _    _    _
+)
+
+(deffakekeys
+  ctl lctl
+  sft lsft
+  lsft lsft
+  met lmet
+  alt lalt
+  mmid mmid
+  pal (multi
+        (on-press-fakekey ctl press)
+        (on-press-fakekey sft press)
+        (on-press-fakekey met press)
+        (on-press-fakekey alt press)
+      )
+  ral (multi
+        (on-press-fakekey ctl release)
+        (on-press-fakekey sft release)
+        (on-press-fakekey met release)
+        (on-press-fakekey alt release)
+      )
+)
+
+(defalias
+  fcp (on-press-fakekey ctl press)
+  fcr (on-press-fakekey ctl release)
+  fct (on-press-fakekey ctl tap)
+  fsp (on-release-fakekey sft press)
+  fsr (on-release-fakekey sft release)
+  fst (on-release-fakekey sft tap)
+  fsg (on-release-fakekey sft toggle)
+  fmp (on-press-fakekey met press)
+  fap (on-press-fakekey alt press)
+  rma (multi
+        (on-press-fakekey met release)
+        (on-press-fakekey alt release)
+      )
+  pal (on-press-fakekey pal tap)
+  ral (on-press-fakekey ral tap)
+  rdl (on-idle-fakekey ral tap 1000)
+  hfd (hold-for-duration 1000 met)
+
+  ;; on-press-fakekey と on-release-fakekey をマクロ内で使うテストです。
+  t1 (macro-release-cancel @fsp 5 a b c @fsr 5 c b a)
+
+  ;; multiでアプリが正しく入力を認識しない場合、fakekey-delay 系を試せます。ただし処理中は他入力も待たされるため注意が必要です。
+  stm (multi ;; Shiftから中ボタンへ、遅延付きで変換する例です。
+    (on-press-fakekey lsft press)
+    (on-press-fakekey-delay 200)
+    (on-press-fakekey mmid press)
+    (on-release-fakekey mmid release)
+    (on-release-fakekey-delay 200)
+    (on-release-fakekey lsft release)
+  )
+)
+
+;; Vim風のリーダーキーシーケンスです。リーダーキー後の文字列に応じてfakekey-tapを発動します。タイムアウトや入力表示方式も設定できます。
+(defseq git-status (g s t))
+(deffakekeys git-status (macro g i t spc s t a t u s))
+(defalias rcl (tap-hold-release 200 200 sldr rctl))
+
+(defseq
+    dotcom (. S-3)
+    dotorg (. S-4)
+)
+(deffakekeys
+    dotcom (macro . c o m)
+    dotorg (macro . o r g)
+)
+;; シーケンスモードに入り、ドットを入力する例です。
+(defalias dot-sequence (macro (sequence 250) 10 .))
+(defalias dot-sequence-inputmode (macro (sequence 250 hidden-delay-type) 10 .))
+
+;; OSには出力されず、シーケンス内だけで使える特殊キーがあります。
+(defseq
+    dotcom (nop0 nop1)
+    dotorg (nop8 nop9)
+)
+
+;; O-(...) は同時押しのキーリストを表します。
+(defseq
+    dotcom (O-(. c m))
+    dotorg (O-(. r g))
+)
+
+;; sequence-noerase は、デッドキー環境で戻しBackspaceが多すぎる問題を避けるため、消去数を減らす指示です。
+
+(deflayermap (base)
+  0 sldr
+  u (t! maybe-noerase u)
+)
+(deftemplate maybe-noerase (char)
+  (multi
+    (switch
+      ((key-history ' 1)) (sequence-noerase 1) fallthrough
+      () $char break
+   ))
+)
+(defvirtualkeys seq-output-1 (macro a b c d e f g))
+(defseq seq-output-1 (' u))
+
+;; 入力コードの説明です。複数の入力キーを同時に押した組み合わせにアクションを割り当てられます。
+(defchords binary 500
+  (1      ) 1
+  (  2    ) 2
+  (1 2    ) 3
+  (    4  ) 4
+  (1   4  ) 5
+  (  2 4  ) 6
+  (1 2 4  ) 7
+  (      8) 8
+  (1     8) 9
+  (  2   8) (multi 1 0)
+  (1 2   8) (multi 1 1)
+  (    4 8) (multi 1 2)
+  (1   4 8) (multi 1 3)
+  (  2 4 8) (multi 1 4)
+  (1 2 4 8) (multi 1 5)
+)
+
+(defalias
+  ch1 (chord binary 1)
+  ch2 (chord binary 2)
+  ch4 (chord binary 4)
+  ch8 (chord binary 8)
+)
+
+;; include は別ファイルの設定を読み込むトップレベルアクションです。現在はトップレベルでのみ使え、読み込まれたファイル内のincludeは使えません。
+
+
+;; deftemplate は繰り返し使う設定パターンを定義します。expand-templateで展開します。
+
+;; このテンプレートは、複数レイヤーで同じ位置のコード動作を再利用するためのものです。
+(deftemplate left-hand-chords (chordgroupname k1 k2 k3 k4 alias1 alias2 alias3 alias4)
+  (defalias
+    $alias1 (chord $chordgroupname $k1)
+    $alias2 (chord $chordgroupname $k2)
+    $alias3 (chord $chordgroupname $k3)
+    $alias4 (chord $chordgroupname $k4)
+  )
+  (defchords $chordgroupname $chord-timeout
+    ($k1) $k1
+    ($k2) $k2
+    ($k3) $k3
+    ($k4) $k4
+    ($k1 $k2) lctl
+    ($k3 $k4) lsft
+  )
+)
+
+(defvar chord-timeout 200)
+
+(template-expand left-hand-chords qwerty a s d f qwa qws qwd qwf)
+;; t! は template-expand の短縮形として使えます。
+(t! left-hand-chords dvorak a o e u dva dvo dve dvu)
+
+(deflayer template-example
+  _    _    _    _    _    _    _    _    _    _    _    _    _    _
+  _    @qwa @qws @qwd @qwf _    _    _    _    _    _    _    _    _
+  _    @dva @dvo @dve @dvu _    _    _    _    _    _    _    _
+  _    _    _    _    _    _    _    _    _    _    _    _
+  _    _    _              _              _    _    _
+)
+
+;; deftemplate 内では if-equal による条件付き挿入ができます。
+
+(deftemplate home-row (version)
+  a s d f g h
+  (if-equal $version v1 j)
+  (if-equal $version v2 (tap-hold 200 200 j lctl))
+   k l ; '
+)
+
+(deftemplate common-overrides ()
+  (lctl 7) (lctl lsft tab)
+  (lctl 9) (lctl tab)
+  (lalt 7) (lalt lsft tab)
+  (lalt 9) (lalt tab)
+)
+
+;; platform で囲むと、指定したプラットフォーム上でだけ設定を有効化できます。
+(platform (macos)
+  ;; macOSではCommandが多用途なため、単語移動や削除をCommand矢印からAlt矢印へ変換する例です。
+  (defoverrides
+    (lmet bspc)  (lalt bspc)
+    (lmet left)  (lalt left)
+    (lmet right) (lalt right)
+    (template-expand common-overrides)
+  )
+)
+(platform (win winiov2 wintercept linux)
+  (defoverrides
+    (template-expand common-overrides)
+  )
+)
+
+#|
+defoverrides には、より細かく制御できる新しい形式もあります。
+新形式では、変換元、変換先、除外する修飾キー、除外するレイヤーを指定します。
+旧形式と新形式は同時には使えません。
+|#
+
+#|
+グローバル入力コードの例です。
+defchordsv2 では、参加キー、実行するアクション、タイムアウト、解除条件、無効化するレイヤーを組で指定します。
+|#
+
+(defchordsv2
+  (a b c)   (macro a l p h a b e t)  200 all-released  (qwerty arrows)
+  (h l o)   (macro h e l l o)        250 first-release (qwerty arrows)
+  (g b y e) (macro g o o d b y e)    400 first-release (qwerty arrows)
+)
+
+#|
+zippychord の設定例です。
+同時押しや略語入力のような入力補助を定義できます。
+このブロックは説明用のコメントであり、現在の設定では実行されません。
+|#
+
+#|
+クリップボード操作の説明です。
+貼り付ける場合は、環境に合わせて C-v や S-ins などのキー出力を自分で指定します。
+|#
+
+(deflayermap (clip)
+ a (clipboard-set       clip)
+ b (clipboard-save      0)
+ c (clipboard-restore   0)
+ d (clipboard-save-swap 0 65535)
+ #| cmd を使うクリップボード操作は、対応ビルドと defcfg 側の明示的な有効化が必要です。 |#
+)

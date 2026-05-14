@@ -1,0 +1,85 @@
+;; コメントはダブルセミコロン（;;）で始まります。セミコロン1つだけだと
+;; “キーボードのキー名” として解釈されます。コメントは設定ファイルとしては無視されます。
+;;
+;; この設定言語は Lisp 風の構文です。もし Lisp に詳しくなくても気にしないでください。
+;; メンテナ（jtroo）自身も Lisp に詳しいわけではありません。
+;; kanata を設定するために Lisp を深く知る必要はありません。
+;;
+;; このドキュメントのサンプルに沿っていけば問題なく使えるはずです。
+;; 何かうまくいかないことがあっても、kanata はできるだけ分かりやすい
+;; エラーメッセージを出すようにしています。
+;; それでも困ったら、気軽に質問してください。
+
+;; defsrc は 1 つだけ定義できます。
+;;
+;; defsrc は kanata が「どの物理キーを読み取るか」を定義します。
+;; キーの並び順は deflayer の宣言と一致していなければならず、
+;; すべての deflayer は defsrc と同じ数のキーを持つ必要があります。
+;; defsrc に記載されていないキーは、そのまま OS に渡されます。
+(defsrc
+  grv  1    2    3    4    5    6    7    8    9    0    -    =    bspc
+  tab  q    w    e    r    t    y    u    i    o    p    [    ]    \
+  caps a    s    d    f    g    h    j    k    l    ;    '    ret
+  lsft z    x    c    v    b    n    m    ,    .    /    rsft
+  lctl lmet lalt           spc            ralt rmet rctl
+)
+
+;; 最初に定義されたレイヤーが、kanata 起動時にデフォルトで有効になるレイヤーです。
+;; このレイヤーは基本的に標準的な QWERTY 配列ですが、
+;; バッククォート／グレイブキー（@grl）だけは tap-hold キーのエイリアスとして扱われます。
+(deflayer qwerty
+  @grl 1    2    3    4    5    6    7    8    9    0    -    =    bspc
+  tab  q    w    e    r    t    y    u    i    o    p    [    ]    \
+  caps a    s    d    f    g    h    j    k    l    ;    '    ret
+  lsft z    x    c    v    b    n    m    ,    .    /    rsft
+  lctl lmet lalt           spc            ralt rmet rctl
+)
+
+;; dvorak レイヤーはキーを Dvorak 配列に再割り当てします。
+;; さらに、もう 1 つの tap-hold キーである @cap があります。
+;; このキーは、素早くタップすると従来どおりの Caps Lock として動作し、
+;; 長押しすると Left-Control として読み取られます。
+(deflayer dvorak
+  @grl 1    2    3    4    5    6    7    8    9    0    [    ]    bspc
+  tab  '    ,    .    p    y    f    g    c    r    l    /    =    \
+  @cap a    o    e    u    i    d    h    t    n    s    -    ret
+  lsft ;    q    j    k    x    b    m    w    v    z    rsft
+  lctl lmet lalt           spc            ralt rmet rctl
+)
+
+;; defalias は、複雑なアクションにショートカット名を付けるために使われます。
+;; これによって deflayer の記述を見やすく、きれいに整列させられます。
+;; deflayer 内の整列は必須ではありませんが、視覚的に理解しやすくなるため
+;; 強くおすすめされています。
+;;
+;; エイリアスは `@<alias_name>` の形式で参照します。
+(defalias
+  ;; タップ時：バッククォート（グレイブ）
+  ;; ホールド時：押している間だけ layer-toggle レイヤーを ON
+  grl (tap-hold 200 200 grv (layer-toggle layers))
+
+  ;; ベースレイヤーから指定のレイヤーへ切り替え
+  dvk (layer-switch dvorak)
+  qwr (layer-switch qwerty)
+
+  ;; タップ時：Caps lock
+  ;; ホールド時：左Ctrl
+  cap (tap-hold 200 200 caps lctl)
+)
+
+;; `lrld` アクションは “live reload（ライブリロード）” の略です。
+;; これを実行すると linux-dev 以外のすべての設定を再読み込みします。
+;; つまり、ライブリロード中にキーボードデバイスを切り替えることはできません。
+;;
+;; キー 1 と 2 は、それぞれベースレイヤーを qwerty と dvorak に切り替えます。
+;;
+;; レイヤー切り替えとライブリロード以外のキーはすべてアンダースコア `_`
+;; になっています。アンダースコアは「透明（transparent）」を意味します。
+;; 透明なキーは、そのキーが押されたときに base レイヤーの動作を引き継ぎます。
+(deflayer layers
+  _    @qwr @dvk lrld _    _    _    _    _    _    _    _    _    _
+  _    _    _    _    _    _    _    _    _    _    _    _    _    _
+  _    _    _    _    _    _    _    _    _    _    _    _    _
+  _    _    _    _    _    _    _    _    _    _    _    _
+  _    _    _              _              _    _    _
+)

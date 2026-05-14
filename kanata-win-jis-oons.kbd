@@ -1,0 +1,104 @@
+;; 0. グローバル設定
+#|
+こういうのも書いていかないとね
+つかえなくなっちゃうから
+#|
+(defcfg
+    process-unmapped-keys yes   ;; defsrc で定義しないキーも通す
+)
+
+;; 1. 使用キーの定義
+(defsrc
+    esc     f1      f2      f3      f4      f5      f6      f7      f8      f9      f10     f11     f12      
+            1       2       3       4       5       6       7       8       9       0       -       =       bspc
+    tab     q       w       e       r       t       y       u       i       o       p       ⎡       ⎣
+    lctl    a       s       d       f       g       h       j       k       l       ;       apo     \       ret
+    lsft    z       x       c       v       b       n       m       ,       .       /       ro      rsft
+    caps    lalt    lmet                    spc                     rmet    fn
+)
+
+;; 2. 変数の定義
+(defvar
+    ;; 数値(時間)の単位: ms
+    tap-time    200
+    hold-time   200
+    double-tap-time   300
+    
+    left-hand-keys (
+        q w e r t
+        a s d f g
+        z x c v b
+    )
+    
+    right-hand-keys (
+        y u i o p
+        h j k l ;
+        n m , . /
+    )
+)
+
+;; 3. 複雑な操作の定義
+(defalias
+    tap (multi
+        (layer-switch nomods)
+        (on-idle-fakekey to-base tap 20)
+    )
+    a (tap-hold-release-keys $tap-time $hold-time (multi a @tap) lctl $left-hand-keys)
+    s (tap-hold-release-keys $tap-time $hold-time (multi s @tap) lalt $left-hand-keys)
+    d (tap-hold-release-keys $tap-time $hold-time (multi d @tap) lsft $left-hand-keys)
+    f (tap-hold-release-keys $tap-time $hold-time (multi f @tap) lmet $left-hand-keys)
+    j (tap-hold-release-keys $tap-time $hold-time (multi j @tap) rmet $right-hand-keys)
+    k (tap-hold-release-keys $tap-time $hold-time (multi k @tap) rsft $right-hand-keys)
+    l (tap-hold-release-keys $tap-time $hold-time (multi l @tap) ralt $right-hand-keys)
+    ; (tap-hold-release-keys $tap-time $hold-time (multi ; @tap) rctl $right-hand-keys)
+    en Lang2
+    ja Lang1
+    hyper (layer-while-held hyper)      ;; タップ→ esc, 長押し→Hyperレイヤー
+    funct (tap-dance $double-tap-time (lsft (layer-while-held function)))   ;; タップor長押し→Left shift, 2回タップ+長押し→Functionレイヤー
+    fn    (tap-hold $tap-time $hold-time fn (layer-while-held function))
+)
+
+;; 4. レイヤー定義
+;; --- ベースレイヤー ---
+(deflayer base
+    _       _       _       _       _       _       _       _       _       _       _       _       _
+            _       _       _       _       _       _       _       _       _       _       _       _       _
+    _       _       _       _       _       _       _       _       _       _       _       _       _
+    @hyper  @a      @s      @d      @f      _       _       @j      @k      @l      @;      _       _       _
+    @funct  _       _       _       _       _       _       _       _       _       _       _       _
+    lctl    _       _                       _                       @en     @fn
+)
+
+;; --- nomodsレイヤー ---
+(deflayer nomods
+    _       _       _       _       _       _       _       _       _       _       _       _       _
+            _       _       _       _       _       _       _       _       _       _       _       _       _
+    _       _       _       _       _       _       _       _       _       _       _       _       _
+    @hyper  a       s       d       f       _       _       j       k       l       ;       _       _       _
+    @funct  _       _       _       _       _       _       _       _       _       _       _       _
+    lctl    _       _                       _                       @en     @fn
+)
+
+(deffakekeys
+    to-base (layer-switch base)
+)
+
+;; --- Hyperレイヤー ---
+(deflayer hyper
+    _       _       _       _       _       _       _       _       _       _       _       _       _
+            _       _       _       _       _       _       _       _       _       _       _       _       _
+    esc     C-tab   bspc    up      del     C-S-tab _       _       _       _       _       _       _
+    @hyper  home    lft     down    rght    end     _       @j      @k      @l      @;      _       _       _
+    @funct  pgup    M-z     M-S-z   pgdn    _       _       _       _       _       _       _       _
+    lctl    _       _                       ret                     @ja     @fn
+)
+
+;; --- Functionレイヤー ---
+(deflayer function
+    _       brdn    brup    mctl    sls     dtn     dnd     prev    pp      next    mute    voldwn  volu
+            f1      f2      f3      f4      f5      f6      f7      f8      f9      f10     f11     f12     del
+    _       C-tab   bspc    up      del     C-S-tab kp,     kp7     kp8     kp9     S--     ret     _
+    @hyper  home    lft     down    rght    end     kp.     kp4     kp5     kp6     kp+     kp*     _       _
+    @funct  pgup    M-z     M-S-z   pgdn    kp0     kp1     kp2     kp3     -       kp/     _       _
+    lctl    _       _                       _                       @ja     @fn
+)
