@@ -4,8 +4,8 @@
 ;;
 ;; 目的:
 ;;   - 起動直後は「大西配列」としてそのまま使う
-;;   - F12 を押すと QWERTY 入力に切り替える
-;;   - QWERTY 中に F12 を押すと大西配列へ戻す
+;;   - F1 を押すと QWERTY 入力に切り替える
+;;   - QWERTY 中に F1 を押すと大西配列へ戻す
 ;;
 ;; 前提:
 ;;   物理キーボード、または ChgKey / Scancode Map 適用後の入力が、
@@ -137,7 +137,8 @@
 ;; つまりこのレイヤーは、
 ;; 「ChgKeyで大西化された入力を、KanataでQWERTYへ戻す層」。
 ;;
-;; F12 だけは大西配列へ戻るキーにする。
+;; F1 だけは大西配列へ戻るキーにする。
+;; https://github.com/jtroo/kanata/blob/main/parser/src/keys/mod.rs
 ;; ============================================================
 (deflayer qwerty
   esc   @to-onishi  f2    f3    f4    f5    f6    f7    f8    f9    f10   f11   f12
@@ -151,10 +152,10 @@
 (deflayer extra
   esc   @to-qwerty  f2    f3    f4    f5    f6    f7    f8    f9    f10   f11   f12
         1     2     3     4     5     6     7     8     9     0     /     =     bspc
-  tab   q     l     u     ,     .     f     w     r     y     p     [     ]
-  @ext  e     i     a     o     -     k     t     n     s     h     '     \     ret
-  lsft  z     x     c     v     ;     g     d     m     j     b     ro    rsft
-  lctl  lmet  lalt  mhnk        spc               hnk   kana  rctl
+  tab   q     7     8     9     \     prnt  home  end   del   p     [     ]
+  @ext  e     4     5     6     0     lft   rght  up    down  h     '     \     ret
+  lsft  z     2     2     3     ;     [     ]     /     `     ?     ro    rsft
+  lctl  lmet  lalt  esc         ent               bspc  kana  rctl
 )
 
 
