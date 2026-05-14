@@ -85,6 +85,7 @@
 (defalias
   to-qwerty (layer-switch qwerty)
   to-onishi (layer-switch onishi)
+  ext (layer-while-held extra)
 )
 
 
@@ -104,10 +105,10 @@
 ;;   F12 だけは QWERTY へ切り替えるキーにする。
 ;; ============================================================
 (deflayer onishi
-  esc   caps  f2    f3    f4    f5    f6    f7    f8    f9    f10   f11   @to-qwerty
+  esc   @to-qwerty  f2    f3    f4    f5    f6    f7    f8    f9    f10   f11   f12
         1     2     3     4     5     6     7     8     9     0     /     =     bspc
   tab   q     l     u     ,     .     f     w     r     y     p     [     ]
-  f1    e     i     a     o     -     k     t     n     s     h     '     \     ret
+  @ext  e     i     a     o     -     k     t     n     s     h     '     \     ret
   lsft  z     x     c     v     ;     g     d     m     j     b     ro    rsft
   lctl  lmet  lalt  mhnk        spc               hnk   kana  rctl
 )
@@ -139,11 +140,20 @@
 ;; F12 だけは大西配列へ戻るキーにする。
 ;; ============================================================
 (deflayer qwerty
-  esc   caps  f2    f3    f4    f5    f6    f7    f8    f9    f10   f11   @to-onishi
+  esc   @to-onishi  f2    f3    f4    f5    f6    f7    f8    f9    f10   f11   f12
         1     2     3     4     5     6     7     8     9     0     -     =     bspc
   tab   q     w     e     r     t     y     u     i     o     p     [     ]
-  f1    a     s     d     f     g     h     j     k     l     ;     '     \     ret
+  @ext  a     s     d     f     g     h     j     k     l     ;     '     \     ret
   lsft  z     x     c     v     b     n     m     ,     .     /     ro    rsft
+  lctl  lmet  lalt  mhnk        spc               hnk   kana  rctl
+)
+
+(deflayer extra
+  esc   @to-qwerty  f2    f3    f4    f5    f6    f7    f8    f9    f10   f11   f12
+        1     2     3     4     5     6     7     8     9     0     /     =     bspc
+  tab   q     l     u     ,     .     f     w     r     y     p     [     ]
+  @ext  e     i     a     o     -     k     t     n     s     h     '     \     ret
+  lsft  z     x     c     v     ;     g     d     m     j     b     ro    rsft
   lctl  lmet  lalt  mhnk        spc               hnk   kana  rctl
 )
 
