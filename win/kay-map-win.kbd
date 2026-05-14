@@ -154,7 +154,7 @@
         1     2     3     4     5     6     7     8     9     0     /     =     bspc
   tab   q     7     8     9     \     prnt  home  end   del   p     [     ]
   @ext  e     4     5     6     0     lft   rght  up    down  h     '     \     ret
-  lsft  z     2     2     3     ;     [     ]     /     `     ?     ro    rsft
+  lsft  z     2     2     3     ;     [     ]     /     grv   =     ro    rsft
   lctl  lmet  lalt  esc         ent               bspc  kana  rctl
 )
 
