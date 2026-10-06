@@ -1,0 +1,93 @@
+;; ============================================================
+;; macOS / US ANSI keyboard + hidutil Onishi baseline
+;;
+;; Goal:
+;;   - Keep the base Onishi 1:1 layout owned by macOS hidutil.
+;;   - Keep Kanata responsible for stateful custom behaviour.
+;;   - Preserve the Windows custom layout as closely as possible.
+;;
+;; Expected event path on macOS:
+;;
+;;   physical US ANSI keyboard
+;;     -> Kanata sees raw physical usages
+;;     -> Karabiner VirtualHID keyboard output
+;;     -> global hidutil UserKeyMapping
+;;     -> macOS / applications
+;;
+;; Therefore:
+;;   - onishi layer emits the raw key unchanged; hidutil produces Onishi.
+;;   - qwerty layer emits the inverse of the hidutil mapping so the final
+;;     character seen by macOS is QWERTY.
+;;   - extra layer actions that emit remapped letters/punctuation also use
+;;     the inverse source key where necessary.
+;;
+;; F1: switch Onishi <-> QWERTY
+;; Caps (hold): extra layer
+;; ============================================================
+
+(defcfg
+  process-unmapped-keys yes
+)
+
+;; Raw US ANSI usages as seen by Kanata.
+;; JIS-only ro / mhnk / hnk / kana keys are intentionally absent.
+(defsrc
+  esc   f1    f2    f3    f4    f5    f6    f7    f8    f9    f10   f11   f12
+  grv   1     2     3     4     5     6     7     8     9     0     -     =     bspc
+  tab   q     w     e     r     t     y     u     i     o     p     [     ]     \
+  caps  a     s     d     f     g     h     j     k     l     ;     '     ret
+  lsft  z     x     c     v     b     n     m     ,     .     /     rsft
+  lctl  lalt  lmet              spc               rmet  ralt
+)
+
+(defalias
+  to-qwerty (layer-switch qwerty)
+  to-onishi (layer-switch onishi)
+  ext (layer-while-held extra)
+)
+
+;; Base layer.
+;; Emit raw usages; the global hidutil mapping produces the final Onishi layout.
+(deflayer onishi
+  esc   @to-qwerty f2   f3    f4    f5    f6    f7    f8    f9    f10   f11   f12
+  grv   1     2     3     4     5     6     7     8     9     0     -     =     bspc
+  tab   q     w     e     r     t     y     u     i     o     p     [     ]     \
+  @ext  a     s     d     f     g     h     j     k     l     ;     '     ret
+  lsft  z     x     c     v     b     n     m     ,     .     /     rsft
+  lctl  lalt  lmet              spc               rmet  ralt
+)
+
+;; QWERTY layer.
+;; Outputs are the inverse of the hidutil Onishi mapping.
+;;
+;; Example:
+;;   physical W -> emit U -> hidutil U->W -> final W
+;;   physical A -> emit D -> hidutil D->A -> final A
+;;   physical - -> emit G -> hidutil G->- -> final -
+(deflayer qwerty
+  esc   @to-onishi f2   f3    f4    f5    f6    f7    f8    f9    f10   f11   f12
+  grv   1     2     3     4     5     6     7     8     9     0     g     =     bspc
+  tab   q     u     a     i     j     o     e     s     f     p     [     ]     \
+  @ext  d     l     m     y     n     ;     .     h     w     b     '     ret
+  lsft  z     x     c     v     /     k     ,     r     t     -     rsft
+  lctl  lalt  lmet              spc               rmet  ralt
+)
+
+;; Extra layer, ported from win/kay-map-win.kbd by physical position.
+;;
+;; JIS thumb keys do not exist on US ANSI. Their useful positional actions are
+;; mapped around Space instead:
+;;   left Command -> Escape
+;;   Space        -> Enter
+;;   right Command -> Backspace
+;;
+;; Windows Print Screen becomes the macOS full-screen screenshot shortcut.
+;; The existing Windows X/C -> 2/2 behaviour is preserved intentionally.
+(deflayer extra
+  esc   @to-qwerty f2   f3    f4    f5    f6    f7    f8    f9    f10   f11   f12
+  grv   1     2     3     4     5     6     7     8     9     0     -     =     bspc
+  tab   q     7     8     9     \\    M-S-3 home  end   del   p     [     ]     \
+  @ext  a     4     5     6     0     lft   rght  up    down  ;     '     ret
+  lsft  z     2     2     3     b     [     ]     -     grv   =     rsft
+  lctl  lalt  esc               ent               bspc  ralt
+)
