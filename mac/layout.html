@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kanata Space HUB v1 — US ANSI / 大西配列</title>
+<style>
+:root {
+  color-scheme: dark;
+  --bg:#111315; --panel:#171a1d; --key:#22272b; --key2:#2b3136;
+  --text:#f2f4f5; --muted:#9ba4aa; --line:#343a40;
+  --nav:#4ea8de; --edit:#90be6d; --sym:#f9c74f; --sym2:#f9844a;
+  --num:#43aa8b; --layer:#b388eb; --ime:#ff70a6; --mouse:#4cc9f0;
+  --auto:#ff9f1c; --system:#adb5bd; --held:#ef476f; --mod:#8d99ae; --fn:#c77dff;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+main{max-width:1480px;margin:0 auto;padding:24px}
+h1{font-size:clamp(22px,3vw,34px);margin:0 0 8px}
+.lead{color:var(--muted);margin:0 0 20px;line-height:1.6}
+.summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:18px 0}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px}
+.card strong{display:block;margin-bottom:4px} .card span{color:var(--muted);font-size:13px;line-height:1.45}
+.tabs{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0}
+.tabs button{border:1px solid var(--line);background:var(--key);color:var(--text);padding:10px 14px;border-radius:10px;cursor:pointer;font-size:14px}
+.tabs button[aria-selected="true"]{background:#f2f4f5;color:#101214;border-color:#f2f4f5;font-weight:700}
+.layer-head{display:flex;justify-content:space-between;gap:14px;align-items:end;margin:16px 0 10px;flex-wrap:wrap}
+.layer-head h2{font-size:22px;margin:0} .layer-head p{margin:0;color:var(--muted);font-size:14px}
+.keyboard-wrap{overflow-x:auto;padding:6px 0 14px}
+.keyboard{min-width:1120px;display:flex;flex-direction:column;gap:7px}
+.row{display:flex;gap:7px}
+.key{height:70px;min-width:66px;flex:1;background:var(--key);border:1px solid var(--line);border-radius:9px;padding:7px;display:flex;flex-direction:column;justify-content:space-between}
+.key .phys{font-size:11px;color:var(--muted);font-weight:650;letter-spacing:.03em}
+.key .act{font-size:16px;font-weight:750;line-height:1.1;word-break:keep-all}
+.key.empty .act{color:#50585f;font-weight:500}
+.key[data-cat="nav"]{border-color:color-mix(in srgb,var(--nav) 55%,var(--line))} .key[data-cat="nav"] .act{color:var(--nav)}
+.key[data-cat="edit"] .act{color:var(--edit)} .key[data-cat="sym"] .act{color:var(--sym)} .key[data-cat="sym2"] .act{color:var(--sym2)}
+.key[data-cat="num"] .act{color:var(--num)} .key[data-cat="layer"] .act{color:var(--layer)} .key[data-cat="ime"] .act{color:var(--ime)}
+.key[data-cat="mouse"] .act{color:var(--mouse)} .key[data-cat="auto"] .act{color:var(--auto)} .key[data-cat="system"] .act{color:var(--system)}
+.key[data-cat="held"]{background:#341c25;border-color:var(--held)} .key[data-cat="held"] .act{color:var(--held)}
+.key[data-cat="mod"] .act{color:var(--mod)} .key[data-cat="fn"] .act{color:var(--fn)}
+.row:nth-child(3){padding-left:28px} .row:nth-child(4){padding-left:45px} .row:nth-child(5){padding-left:62px}
+.row:nth-child(6){padding-left:150px;padding-right:190px}
+.row:nth-child(6) .key:nth-child(4){flex:4}
+.legend{display:flex;flex-wrap:wrap;gap:10px 16px;border-top:1px solid var(--line);padding-top:14px;margin-top:6px}
+.legend span{font-size:12px;color:var(--muted)} .dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px}
+.notes{display:grid;grid-template-columns:1.2fr 1fr;gap:14px;margin-top:22px}
+.notes h3{margin:0 0 8px;font-size:16px} .notes p,.notes li{color:var(--muted);font-size:13px;line-height:1.6}
+.notes ul{margin:0;padding-left:20px}
+kbd{background:var(--key2);border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;padding:1px 5px;color:var(--text)}
+@media(max-width:800px){main{padding:14px} .summary,.notes{grid-template-columns:1fr 1fr}}
+@media(max-width:520px){.summary,.notes{grid-template-columns:1fr}}
+@media print{body{background:#fff;color:#111} main{max-width:none;padding:8mm} .tabs{display:none} .keyboard-wrap{overflow:visible} .keyboard{min-width:0} .key{background:#fff;border-color:#888;height:55px} .key .phys{color:#666} .lead,.layer-head p,.notes p,.notes li,.legend span{color:#555}}
+</style>
+</head>
+<body>
+<main>
+  <h1>Kanata Space HUB v1</h1>
+  <p class="lead">US ANSI + 大西配列。キー名はすべて<strong>物理US位置</strong>。通常文字の大西配列は変更せず、Spaceと左右Shiftを軸に追加レイヤーだけを重ねる。</p>
+
+  <section class="summary" aria-label="基本操作">
+    <div class="card"><strong>Space tap</strong><span>通常のSpace。holdするとHUB。</span></div>
+    <div class="card"><strong>Space + LShift</strong><span>tap = 英数 / hold = 左記号 + 右テンキー。</span></div>
+    <div class="card"><strong>Space + RShift</strong><span>tap = かな / hold = 左テンキー + 右記号。</span></div>
+    <div class="card"><strong>Automation</strong><span>片Shiftをhold中に反対Shiftをtap。次の1キーだけ有劻。</span></div>
+  </section>
+
+  <nav class="tabs" aria-label="レイヤー切替">
+    <button type="button" data-view="overview" aria-selected="false">Overview</button>
+    <button type="button" data-view="hub" aria-selected="true">Space / HUB</button>
+    <button type="button" data-view="lhs" aria-selected="false">+ LShift hold</button>
+    <button type="button" data-view="rhs" aria-selected="false">+ RShift hold</button>
+    <button type="button" data-view="auto" aria-selected="false">Automation</button>
+    <button type="button" data-view="mouse" aria-selected="false">Mouse</button>
+  </nav>
+
+  <div class="layer-head">
+    <div><h2 id="layerTitle"></h2><p id="layerSubtitle"></p></div>
+    <p>空欄 = ベース/下位レイヤーへ透過、または無効</p>
+  </div>
+
+  <div class="keyboard-wrap">
+    <div class="keyboard" id="keyboard" aria-live="polite"></div>
+  </div>
+
+  <div class="legend" aria-label="凡例">
+    <span><i class="dot" style="background:var(--nav)"></i>移動</span>
+    <span><i class="dot" style="background:var(--edit)"></i>編集</span>
+    <span><i class="dot" style="background:var(--num)"></i>数字</span>
+    <span><i class="dot" style="background:var(--sym)"></i>主要記号</span>
+    <span><i class="dot" style="background:var(--sym2)"></i>補助記号</span>
+    <span><i class="dot" style="background:var(--ime)"></i>IME</span>
+    <span><i class="dot" style="background:var(--mouse)"></i>Mouse</span>
+    <span><i class="dot" style="background:var(--auto)"></i>Automation</span>
+  </div>
+
+  <section class="notes">
+    <div class="card">
+      <h3>覚える順番</h3>
+      <ul>
+        <li>最初は <kbd>Space</kbd> + <kbd>H J K L</kbd> と、左右Shift tapの英数/かなだけ。</li>
+        <li>数字は「Shiftを押していない側」に同じ 789 / 456 / 123 + 0 の形で出る。</li>
+        <li>記号は「Shiftを押している側」に <kbd>()[]</kbd> / <kbd>{}&lt;&gt;</kbd> / <kbd>:;"|</kbd> の3段。</li>
+        <li>Mouseは <kbd>Space+M</kbd> で常駐。左手WASD、右手HJKLのどちらでも移動できる。</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Automation</h3>
+      <p><kbd>Space</kbd> + 片方のShiftをhold → 反対Shiftをtap → 手を離す → コマンドキー。スクショはすべてClipboardへ。Dynamic Macroはキー入力記録で、Clipboard履歴ではない。</p>
+      <p>実際のClipboard stackはKanata単体では持たせず、必要になったらユーザーセッション側helperを追加する前提。</p>
+    </div>
+  </section>
+</main>
+
+<script>
+const DATA = {"rows": [["Esc", "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11", "F12"], ["`", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-", "=", "⌫"], ["Tab", "Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P", "[", "]", "\\"], ["Caps", "A", "S", "D", "F", "G", "H", "J", "K", "L", ";", "'", "Enter"], ["LShift", "Z", "X", "C", "V", "B", "N", "M", ",", ".", "/", "RShift"], ["Ctrl", "Option", "⌘", "Space", "⌘R", "OptionR"]], "views": {"overview": {"title": "Overview", "subtitle": "物理USキー基準。ベース文字は既存の大西配列のまま。", "map": {"Space": ["tap: Space / hold: HUB", "layer"], "LShift": ["通常時はShift", "mod"], "RShift": ["通常時はShift", "mod"], "F1": ["大西 ⇄ QWERTY", "layer"]}}, "hub": {"title": "Space — HUB", "subtitle": "Spaceを保持。移動・編集・IME・クリップボードをホーム周辺に集約。", "map": {"Q": ["Redo", "edit"], "W": ["App ⇠", "system"], "E": ["App ⇢", "system"], "R": ["⌘F", "edit"], "Y": ["行頭", "nav"], "U": ["単語←", "nav"], "I": ["文書↑", "nav"], "O": ["単語→", "nav"], "P": ["行末", "nav"], "[": ["戻る", "nav"], "]": ["進む", "nav"], "A": ["Esc", "edit"], "S": ["Tab", "edit"], "D": ["⌫", "edit"], "F": ["Enter", "edit"], "G": ["Delete", "edit"], "H": ["←", "nav"], "J": ["↓", "nav"], "K": ["↑", "nav"], "L": ["→", "nav"], ";": ["文書↓", "nav"], "LShift": ["tap 英数 / hold L-side", "ime"], "RShift": ["tap かな / hold R-side", "ime"], "Z": ["⌘Z", "edit"], "X": ["⌘X", "edit"], "C": ["⌘C", "edit"], "V": ["⌘V", "edit"], "B": ["⌘A", "edit"], "N": ["Home", "nav"], "M": ["Mouse mode", "mouse"], ",": ["PgUp", "nav"], ".": ["End", "nav"], "/": ["PgDn", "nav"], "Space": ["hold HUB", "layer"]}}, "lhs": {"title": "Space + LShift hold", "subtitle": "左手は記号、自由な右手は3段テンキー。反対ShiftをtapするとAutomationを1回だけ待機。", "map": {"LShift": ["HOLD", "held"], "RShift": ["tap → Automation", "auto"], "W": ["(", "sym"], "E": [")", "sym"], "R": ["[", "sym"], "T": ["]", "sym"], "S": ["{", "sym"], "D": ["}", "sym"], "F": ["<", "sym"], "G": [">", "sym"], "X": [":", "sym"], "C": [";", "sym"], "V": ["\"", "sym"], "B": ["|", "sym"], "Y": ["-", "sym"], "U": ["7", "num"], "I": ["8", "num"], "O": ["9", "num"], "P": ["+", "sym"], "H": ["=", "sym"], "J": ["4", "num"], "K": ["5", "num"], "L": ["6", "num"], ";": ["/", "sym"], "N": ["0", "num"], "M": ["1", "num"], ",": ["2", "num"], ".": ["3", "num"], "/": ["*", "sym"], "[": ["'", "sym2"], "]": ["\\", "sym2"], "\\": ["_", "sym2"], "'": ["?", "sym2"], "Space": ["hold", "layer"]}}, "rhs": {"title": "Space + RShift hold", "subtitle": "右手は記号、自由な左手は3段テンキー。反対ShiftをtapするとAutomationを1回だけ待機。", "map": {"RShift": ["HOLD", "held"], "LShift": ["tap → Automation", "auto"], "Y": ["(", "sym"], "U": [")", "sym"], "I": ["[", "sym"], "O": ["]", "sym"], "H": ["{", "sym"], "J": ["}", "sym"], "K": ["<", "sym"], "L": [">", "sym"], "N": [":", "sym"], "M": [";", "sym"], ",": ["\"", "sym"], ".": ["|", "sym"], "Q": ["-", "sym"], "W": ["7", "num"], "E": ["8", "num"], "R": ["9", "num"], "T": ["+", "sym"], "A": ["=", "sym"], "S": ["4", "num"], "D": ["5", "num"], "F": ["6", "num"], "G": ["/", "sym"], "Z": ["0", "num"], "X": ["1", "num"], "C": ["2", "num"], "V": ["3", "num"], "B": ["*", "sym"], "Tab": ["'", "sym2"], "Caps": ["\\", "sym2"], "`": ["_", "sym2"], "1": ["?", "sym2"], "Space": ["hold", "layer"]}}, "auto": {"title": "Automation — one-shot", "subtitle": "Space + 片Shift hold + 反対Shift tap → 両手を離す → 次の1キー。1.5秒で自動解除。", "map": {"1": ["F1", "fn"], "2": ["F2", "fn"], "3": ["F3", "fn"], "4": ["F4", "fn"], "5": ["F5", "fn"], "6": ["F6", "fn"], "7": ["F7", "fn"], "8": ["F8", "fn"], "9": ["F9", "fn"], "0": ["F10", "fn"], "-": ["F11", "fn"], "=": ["F12", "fn"], "W": ["窓スクショ→CB", "auto"], "R": ["Macro Rec/Toggle", "auto"], "P": ["Macro Play", "auto"], "A": ["左Click連打", "mouse"], "S": ["範囲スクショ→CB", "auto"], "D": ["右Click連打", "mouse"], "F": ["全画面→CB", "auto"], "G": ["Macro Stop", "auto"], "L": ["Kanata Reload", "system"], "Z": ["明るさ−", "system"], "X": ["明るさ＋", "system"], "C": ["音量−", "system"], "V": ["音量＋", "system"], "B": ["Mute", "system"], "N": ["前曲", "system"], "M": ["Mouse mode", "mouse"], ",": ["Play/Pause", "system"], ".": ["次曲", "system"], "Esc": ["cancel / Esc", "edit"]}}, "mouse": {"title": "Mouse mode", "subtitle": "Space+Mで常駐。WASD / HJKLのどちらの手だけでも操作可能。SpaceかEscで終了。", "map": {"Esc": ["Mouse終了", "layer"], "Space": ["Mouse終了", "layer"], "Q": ["Wheel ↑", "mouse"], "W": ["↑", "mouse"], "E": ["Wheel ↓", "mouse"], "R": ["Middle", "mouse"], "A": ["←", "mouse"], "S": ["↓", "mouse"], "D": ["→", "mouse"], "F": ["Left", "mouse"], "G": ["Right", "mouse"], "Z": ["Wheel ←", "mouse"], "X": ["Wheel →", "mouse"], "C": ["Middle", "mouse"], "V": ["Left連打", "mouse"], "B": ["Right連打", "mouse"], "U": ["Wheel ↑", "mouse"], "I": ["Middle", "mouse"], "O": ["Wheel ↓", "mouse"], "H": ["←", "mouse"], "J": ["↓", "mouse"], "K": ["↑", "mouse"], "L": ["→", "mouse"], ";": ["Left", "mouse"], "'": ["Right", "mouse"], "N": ["Wheel ←", "mouse"], "M": ["Wheel →", "mouse"], ",": ["Middle", "mouse"], ".": ["Left連打", "mouse"], "/": ["Right連打", "mouse"], "LShift": ["35% 精密", "mod"], "RShift": ["35% 精密", "mod"], "⌘": ["250% 高速", "mod"], "⌘R": ["250% 高速", "mod"]}}}};
+const keyboard = document.getElementById("keyboard");
+const title = document.getElementById("layerTitle");
+const subtitle = document.getElementById("layerSubtitle");
+const buttons = [...document.querySelectorAll("[data-view]")];
+
+function render(viewName) {
+  const view = DATA.views[viewName];
+  title.textContent = view.title;
+  subtitle.textContent = view.subtitle;
+  keyboard.replaceChildren();
+
+  for (const row of DATA.rows) {
+    const rowEl = document.createElement("div");
+    rowEl.className = "row";
+    for (const phys of row) {
+      const info = view.map[phys];
+      const key = document.createElement("div");
+      key.className = "key" + (info ? "" : " empty");
+      if (info) key.dataset.cat = info[1];
+
+      const p = document.createElement("span");
+      p.className = "phys";
+      p.textContent = phys;
+
+      const a = document.createElement("span");
+      a.className = "act";
+      a.textContent = info ? info[0] : "·";
+
+      key.append(p, a);
+      rowEl.append(key);
+    }
+    keyboard.append(rowEl);
+  }
+
+  for (const btn of buttons) {
+    btn.setAttribute("aria-selected", btn.dataset.view === viewName ? "true" : "false");
+  }
+}
+
+for (const btn of buttons) {
+  btn.addEventListener("click", () => render(btn.dataset.view));
+}
+render("hub");
+</script>
+</body>
+</html>

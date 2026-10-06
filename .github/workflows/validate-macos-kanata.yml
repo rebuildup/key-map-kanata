@@ -1,0 +1,43 @@
+name: Validate macOS Kanata
+
+on:
+  push:
+    branches: ["1"]
+    paths:
+      - "mac/**"
+      - ".github/workflows/validate-macos-kanata.yml"
+  pull_request:
+    paths:
+      - "mac/**"
+      - ".github/workflows/validate-macos-kanata.yml"
+
+jobs:
+  check:
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download Kanata 1.12.0
+        shell: bash
+        run: |
+          set -euo pipefail
+          case "$(uname -m)" in
+            arm64) asset="macos-binaries-arm64.zip" ;;
+            x86_64) asset="macos-binaries-x64.zip" ;;
+            *) echo "unsupported arch: $(uname -m)" >&2; exit 1 ;;
+          esac
+          mkdir -p .kanata
+          curl -fsSL "https://github.com/jtroo/kanata/releases/download/v1.12.0/$asset" -o /tmp/kanata.zip
+          unzip -q /tmp/kanata.zip -d .kanata
+          bin="$(find .kanata -type f -perm +111 -name 'kanata*' | head -n 1)"
+          test -n "$bin"
+          printf '%s
+' "$bin" > /tmp/kanata-bin
+          "$bin" --version
+
+      - name: Parse macOS config
+        shell: bash
+        run: |
+          set -euo pipefail
+          bin="$(cat /tmp/kanata-bin)"
+          "$bin" --check --cfg mac/kanata-us.kbd
