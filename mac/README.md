@@ -13,6 +13,9 @@ The custom layer is now centered on Space instead of Caps:
 - `Space tap`: Space
 - `Space hold`: HUB
 - `Space + H/J/K/L`: Left / Down / Up / Right
+- `Space + Q`: Command+F
+- `Space + R`: Shift+Enter
+- `Space + T`: Shift+Delete
 - `Space + LShift tap`: Eisu
 - `Space + RShift tap`: Kana
 - `Space + LShift hold`: left-hand symbols + right-hand numpad
@@ -22,7 +25,7 @@ The custom layer is now centered on Space instead of Caps:
 
 Mouse mode provides both WASD and HJKL movement so either hand can operate the pointer. Shift is precision speed, Command is turbo speed, and Space/Escape exits Mouse mode.
 
-Automation includes F1-F12, clipboard screenshots, dynamic macro record/play, repeated mouse click, media/brightness/volume controls, Mouse mode, and Kanata live reload.
+Automation includes F1-F12, Redo, clipboard screenshots, dynamic macro record/play, repeated mouse click, media/brightness/volume controls, Mouse mode, and Kanata live reload.
 
 ## Visual cheat sheet
 

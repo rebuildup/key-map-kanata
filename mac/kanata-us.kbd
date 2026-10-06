@@ -12,6 +12,9 @@
 ;;
 ;; HUB
 ;;   H J K L             : Left / Down / Up / Right
+;;   Q                    : Command+F
+;;   R                    : Shift+Enter
+;;   T                    : Shift+Delete
 ;;   LShift tap          : Eisu
 ;;   RShift tap          : Kana
 ;;   LShift hold         : left symbols + right numpad
@@ -153,7 +156,7 @@
 (deflayer hub-o
   _  _  _  _  _  _  _  _  _  _  _  _  _
   _  _  _  _  _  _  _  _  _  _  _  _  _  _
-  _  @redo  @app-prev  @app-next  @cmdfind  _  M-lft  A-lft  M-up  A-rght  M-rght  M-[  M-]  _
+  _  @cmdfind  @app-prev  @app-next  S-ret  S-del  M-lft  A-lft  M-up  A-rght  M-rght  M-[  M-]  _
   _  esc  tab  bspc  ret  del  lft  down  up  rght  M-down  _  _
   @lso  M-z  M-x  M-c  M-v  @select-all  home  @mouse-o  pgup  end  pgdn  @rso
   _  _  _  _  _  _
@@ -162,7 +165,7 @@
 (deflayer hub-q
   _  _  _  _  _  _  _  _  _  _  _  _  _
   _  _  _  _  _  _  _  _  _  _  _  _  _  _
-  _  @redo  @app-prev  @app-next  @cmdfind  _  M-lft  A-lft  M-up  A-rght  M-rght  M-[  M-]  _
+  _  @cmdfind  @app-prev  @app-next  S-ret  S-del  M-lft  A-lft  M-up  A-rght  M-rght  M-[  M-]  _
   _  esc  tab  bspc  ret  del  lft  down  up  rght  M-down  _  _
   @lsq  M-z  M-x  M-c  M-v  @select-all  home  @mouse-q  pgup  end  pgdn  @rsq
   _  _  _  _  _  _
@@ -207,7 +210,7 @@
 (deflayer auto-o
   esc  XX  XX  XX  XX  XX  XX  XX  XX  XX  XX  XX  XX
   XX  f1  f2  f3  f4  f5  f6  f7  f8  f9  f10  f11  f12  XX
-  XX  XX  @shot-window  XX  @dm0  XX  XX  XX  XX  XX  @dp0  XX  XX  XX
+  XX  @redo  @shot-window  XX  @dm0  XX  XX  XX  XX  XX  @dp0  XX  XX  XX
   XX  @auto-left  @shot-select  @auto-right  @shot-full  @dms  XX  XX  XX  lrld  XX  XX  XX
   XX  brdn  brup  vold  volu  mute  prev  @mouse-o  pp  next  XX  XX
   XX  XX  XX  XX  XX  XX
@@ -216,7 +219,7 @@
 (deflayer auto-q
   esc  XX  XX  XX  XX  XX  XX  XX  XX  XX  XX  XX  XX
   XX  f1  f2  f3  f4  f5  f6  f7  f8  f9  f10  f11  f12  XX
-  XX  XX  @shot-window  XX  @dm0  XX  XX  XX  XX  XX  @dp0  XX  XX  XX
+  XX  @redo  @shot-window  XX  @dm0  XX  XX  XX  XX  XX  @dp0  XX  XX  XX
   XX  @auto-left  @shot-select  @auto-right  @shot-full  @dms  XX  XX  XX  lrld  XX  XX  XX
   XX  brdn  brup  vold  volu  mute  prev  @mouse-q  pp  next  XX  XX
   XX  XX  XX  XX  XX  XX
