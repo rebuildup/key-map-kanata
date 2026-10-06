@@ -2,7 +2,8 @@ name: Validate macOS Kanata
 
 on:
   push:
-    branches: ["1"]
+    branches:
+      - "1"
     paths:
       - "mac/**"
       - ".github/workflows/validate-macos-kanata.yml"
@@ -15,7 +16,8 @@ jobs:
   check:
     runs-on: macos-14
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
       - name: Download Kanata 1.12.0
         shell: bash
@@ -31,8 +33,7 @@ jobs:
           unzip -q /tmp/kanata.zip -d .kanata
           bin="$(find .kanata -type f -perm +111 -name 'kanata*' | head -n 1)"
           test -n "$bin"
-          printf '%s
-' "$bin" > /tmp/kanata-bin
+          echo "$bin" > /tmp/kanata-bin
           "$bin" --version
 
       - name: Parse macOS config
