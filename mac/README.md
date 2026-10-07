@@ -1,12 +1,21 @@
 # macOS US ANSI
 
-`kanata-us.kbd` is the macOS US ANSI configuration used with the global Onishi `hidutil` mapping from `rebuildup/pc-setup`.
+`kanata-us.kbd` is the macOS US ANSI configuration used with the Onishi `hidutil` mapping from `rebuildup/pc-setup`.
 
-The physical keyboard is US ANSI. Kanata sees raw physical usages, emits through the Karabiner VirtualHID keyboard, and the global `hidutil` mapping produces the final Onishi layout.
+## Ownership boundary
+
+The physical keyboard is US ANSI. `hidutil` owns the base Onishi layout and applies it to the physical keyboard event service only. Kanata owns the stateful layers above it.
+
+Two properties of the macOS input path define where the mapping may live:
+
+- Kanata grabs the keyboard at a CGEvent tap above the HID event driver, so it receives keys that `hidutil` has already converted. `defsrc` names the physical US positions, and the base layer names the already converted Onishi keys rather than passing the US names through.
+- Kanata emits through the Karabiner DriverKit virtual keyboard. `hidutil` must not carry the mapping on that service, because a mapping there converts Kanata's already converted output a second time and scrambles every layer it drives. `rebuildup/pc-setup` enforces this by clearing the virtual keyboard across the boot settle window, since the DriverKit service registers after the keyboard LaunchDaemon starts.
+
+One conversion per keystroke is what keeps the two layers independent. Removing either tool must leave the other working: with Kanata stopped, the physical keyboard still produces Onishi; with `hidutil` stopped, Kanata still produces Onishi from its own base layer.
 
 ## Current layout
 
-The base layer remains Onishi and `F1` still switches Onishi / QWERTY.
+The base layer is the Onishi layout, and `F1` switches Onishi / QWERTY.
 
 The custom layer is now centered on Space instead of Caps:
 

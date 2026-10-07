@@ -1,8 +1,16 @@
 ;; ============================================================
 ;; macOS / US ANSI / Onishi + Space HUB v1
 ;;
-;; Base Onishi remains owned by macOS hidutil.
-;; Kanata owns stateful layers and automation.
+;; hidutil applies the Onishi base layout on the physical keyboard event
+;; service only. Kanata reads those keys at a CGEvent tap that sits above the
+;; HID event driver, so it receives the already converted keys and must carry the
+;; same mapping itself; the base layer below is the Onishi layout, not a pass
+;; through of the US positions in defsrc.
+;;
+;; The mapping must stay off the Karabiner DriverKit virtual keyboard. A mapping
+;; there would convert Kanata's already converted output a second time and
+;; scramble every layer it drives. rebuildup/pc-setup enforces that by clearing
+;; the virtual keyboard across the boot settle window.
 ;;
 ;; BASE
 ;;   F1                  : Onishi <-> QWERTY
@@ -18,7 +26,7 @@
 ;;   LShift tap          : Eisu
 ;;   RShift tap          : Kana
 ;;   LShift hold         : left symbols + right numpad
-;;   RShift hold         : left numpad + right symbols
+;;   RShift hold         : right numpad + left symbols
 ;;   hold one Shift, tap the opposite Shift:
 ;;                         arm one-shot Automation layer
 ;;   M                   : persistent Mouse mode
@@ -30,9 +38,9 @@
 ;;   Space / Esc         : return to previous base family
 ;;
 ;; IMPORTANT
-;;   This config assumes the same global Onishi hidutil mapping used by
-;;   rebuildup/pc-setup. Symbol and Command+letter actions therefore emit
-;;   inverse raw usages where required.
+;;   Every key name emitted from a layer is a final key, not a raw usage that a
+;;   downstream conversion rewrites. hidutil sees only the physical keyboard, so
+;;   symbol and Command+letter actions name the key they intend directly.
 ;; ============================================================
 
 (defcfg
@@ -57,9 +65,11 @@
   to-onishi (layer-switch onishi)
 
   ;; Space: tap = Space, hold = HUB.
-  ;; require-prior-idle protects fast "...letter Space letter..." rolls.
-  spco (tap-hold-press 170 180 spc (layer-while-held hub-o) (require-prior-idle 80))
-  spcq (tap-hold-press 170 180 spc (layer-while-held hub-q) (require-prior-idle 80))
+  ;; require-prior-idle is omitted deliberately. It cancels the hold when any
+  ;; prior key landed inside the idle window, which in normal typing is every
+  ;; keystroke, so HUB only opened after an unrelated key such as F1.
+  spco (tap-hold-press 170 180 spc (layer-while-held hub-o))
+  spcq (tap-hold-press 170 180 spc (layer-while-held hub-q))
 
   ;; Inside HUB: tap Shift selects IME, hold Shift opens the side layer.
   lso (tap-hold-press 150 170 eisu (layer-while-held lhs-o) (require-prior-idle 0))
@@ -77,36 +87,35 @@
   back-o (layer-switch onishi)
   back-q (layer-switch qwerty)
 
-  ;; HUB shortcuts. Letter shortcuts emit inverse raw usages where hidutil
-  ;; remaps the underlying letter (e.g. final A is raw D).
+  ;; HUB shortcuts.
   redo M-S-z
   app-prev M-S-tab
   app-next M-tab
-  cmdfind M-y
-  select-all M-d
+  cmdfind M-f
+  select-all M-a
 
-  ;; Symbols: raw US usages chosen so the final symbol is correct after hidutil.
+  ;; Symbols: the key that produces the intended symbol on a US layout.
   lp S-9
   rp S-0
   lb [
   rb ]
   lc S-[
   rc S-]
-  lt S-r
-  gt S-t
-  colon S-b
-  semi b
+  lt S-,
+  gt S-.
+  colon S-;
+  semi ;
   dq S-'
   pipe S-\
-  minus g
+  minus -
   plus S-=
   eq =
-  slash -
+  slash /
   star S-8
   squote '
   bslash \
-  under S-g
-  question S--
+  under S--
+  question S-/
 
   ;; Mouse movement and wheel.
   ml (movemouse-accel-left 1 700 1 12)
@@ -137,19 +146,19 @@
 
 (deflayer onishi
   esc  @to-qwerty  f2  f3  f4  f5  f6  f7  f8  f9  f10  f11  f12
-  grv  1  2  3  4  5  6  7  8  9  0  -  =  bspc
-  tab  q  w  e  r  t  y  u  i  o  p  [  ]  \
-  caps  a  s  d  f  g  h  j  k  l  ;  '  ret
-  lsft  z  x  c  v  b  n  m  ,  .  /  rsft
+  grv  1  2  3  4  5  6  7  8  9  0  /  =  bspc
+  tab  q  l  u  ,  .  f  w  r  y  p  [  ]  \
+  caps  e  i  a  o  -  k  t  n  s  h  '  ret
+  lsft  z  x  c  v  ;  g  d  m  j  b  rsft
   lctl  lalt  lmet  @spco  rmet  ralt
 )
 
 (deflayer qwerty
-  esc  @to-onishi  f2  f3  f4  f5  f6  f7  f8  f9  f10  f11  f12
-  grv  1  2  3  4  5  6  7  8  9  0  g  =  bspc
-  tab  q  u  a  i  j  o  e  s  f  p  [  ]  \
-  caps  d  l  m  y  n  ;  .  h  w  b  '  ret
-  lsft  z  x  c  v  /  k  ,  r  t  -  rsft
+  esc   @to-onishi  f2    f3    f4    f5    f6    f7    f8    f9    f10   f11   f12
+  grv   1     2     3     4     5     6     7     8     9     0     -     =     bspc
+  tab   q     w     e     r     t     y     u     i     o     p     [     ]     \
+  caps  a     s     d     f     g     h     j     k     l     ;     '     ret
+  lsft  z     x     c     v     b     n     m     ,     .     /     rsft
   lctl  lalt  lmet  @spcq  rmet  ralt
 )
 
