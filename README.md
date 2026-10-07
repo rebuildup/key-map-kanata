@@ -62,3 +62,9 @@ https://github.com/jtroo/kanata
 
 
 ## 導入手順
+
+## macOS / US ANSI
+
+US配列MacBook向けの設定は [`mac/kanata-us.kbd`](./mac/kanata-us.kbd) に分離しています。
+
+Windows版のJIS固有キーをそのまま移植せず、`hidutil` を大西配列の1:1 baseline、KanataをF1切替・Caps extra layer等のstateful customizationとして扱います。実機でのevent ordering確認手順は [`mac/README.md`](./mac/README.md) を参照してください。
