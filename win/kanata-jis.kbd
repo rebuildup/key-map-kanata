@@ -196,7 +196,7 @@
   esc   @to-qwerty  f2    f3    f4    f5    f6    f7    f8    f9    f10   f11   f12
   grv   1     2     3     4     5     6     7     8     9     0     /     =     ¥     bspc
   tab   q     7     8     9     ¥     prnt  home  end   del   p     ]     \     ¥
-  @ext  e     4     5     6     0     lft   rght  up    down  h     @squote  ret
+  @ext  e     4     5     6     0     lft   down  up    rght h     @squote  ret
   lsft  z     1     2     3     ;     ]     \     /     grv   @eq   ro    rsft
   lctl  lmet  lalt  esc         ent               bspc  kana  rctl
 )
