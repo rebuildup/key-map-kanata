@@ -57,6 +57,10 @@
 
 (defcfg
   process-unmapped-keys yes
+  ;; JIS 配列では物理キーと kanata が期待する US 仮想キーコードが
+  ;; ずれる (: ` @ [ ] など)。同期チェックが毎回誤検知して
+  ;; 状態をクリアし、同じキーの連打が落ち、エラー通知が出続けるため無効化。
+  windows-sync-keystates none
   concurrent-tap-hold yes
   movemouse-inherit-accel-state yes
   movemouse-smooth-diagonals yes
