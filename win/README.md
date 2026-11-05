@@ -36,6 +36,19 @@ winIOv2 バイナリ (`kanata_windows_tty_winIOv2_x64.exe` / GUI 版も同系) �
 一致しないため、`(deflocalkeys-winiov2 kana 241)` で VK_DBE_KATAKANA 側に
 上書きしている。
 
+### 必要バージョン: v1.13.0-prerelease-1 以降
+
+`defcfg` の `windows-sync-keystates none` は v1.13.0-prerelease-1 で追加された値で、
+v1.12.0 以前では不正値として読み込みエラーになる (`yes/no` のみ受理)。
+
+JIS 配列では `:` `` ` `` `@` `[` `]` `¥` の仮想キーコードが kanata の想定とずれ、
+v1.12.0 は押下のたびに「Unexpected keycode is pressed in kanata but not in Windows」
+と誤検知して状態をクリアする。その結果、同じキーの連打が落ち、GUI 版ではほぼ毎入力で
+エラー通知が出る (upstream: jtroo/kanata#2115 / #2213)。v1.12.0 の
+`windows-sync-keystates no` はこのチェックを止められない。`none` で無効化する。
+
+正式版 v1.13 以降が出たらそちらを使う。
+
 ## JIS 配列対応 (記号の出力変換)
 
 kanata の出力は ja-JP レイヤーで変換されるため、レイヤーから emit する
@@ -80,7 +93,7 @@ Mac 版からの主な差分:
 ## 検証・起動
 
 ```powershell
-# 構文チェック (v1.12.0 winIOv2)
+# 構文チェック (v1.13.0-prerelease-1 以降の winIOv2)
 kanata_windows_tty_winIOv2_x64.exe --check --cfg win\kanata-jis.kbd
 
 # 起動
